@@ -1,21 +1,34 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 import { registerUser } from "../services/user";
 
 export default function Register() {
   const [form, setForm] = useState({
     name: "", email: "", mobile: "", password: "", role: "donor"
   });
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       await registerUser(form);
+      // Get user data after registration
+      const { getHome } = await import("../services/user");
+      const userResponse = await getHome();
+      login(userResponse.data.user);
       alert("User registered successfully!");
+      navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Error registering user");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,9 +45,16 @@ export default function Register() {
           <option value="volunteer">Volunteer</option>
           <option value="ngo">NGO</option>
         </select>
-        <button type="submit" className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
-          Register
+        <button 
+          type="submit" 
+          disabled={loading}
+          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? "Registering..." : "Register"}
         </button>
+        <p className="text-center text-sm text-gray-600">
+          Already have an Account? <Link to="/login" className="text-green-600 hover:text-green-700 font-medium">Login</Link>
+        </p>
       </form>
     </div>
   );

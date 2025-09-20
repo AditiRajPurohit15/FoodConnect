@@ -6,3 +6,4 @@ export const getFoodById = (id) => api.get(`/api/foods/${id}`);
 export const updateFoodStatus = (id, status) =>
   api.put(`/api/foods/${id}`, { status });
 export const deleteFood = (id) => api.delete(`/api/foods/${id}`);
+export const deleteDeliveredFood = (id) => api.delete(`/api/foods/delivered/${id}`);

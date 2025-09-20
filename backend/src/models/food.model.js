@@ -7,7 +7,7 @@ const foodSchema = new mongoose.Schema({
   contact: { type: String, required: true }, // phone number
   expiryTime: { type: Date, required: true }, // till when food is good
   donorId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  status: { type: String, enum: ['Available', 'PickedUp', 'Expired'], default: 'Available' },
+  status: { type: String, enum: ['available', 'picked', 'delivered'], default: 'available' },
 },
 { timestamps: true});
 

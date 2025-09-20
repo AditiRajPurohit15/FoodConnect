@@ -1,15 +1,31 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Navbar() {
+  const { user, logout, isAuthenticated } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+  };
+
   return (
     <nav className="bg-green-600 text-white px-6 py-3 flex justify-between items-center shadow-md">
-      <h1 className="text-xl font-bold">🍲 FoodConnect</h1>
+      <Link to="/" className="text-xl font-bold hover:text-green-200">🍲 FoodConnect</Link>
       <div className="space-x-4">
-        <Link to="/register" className="hover:underline">Register</Link>
-        <Link to="/login" className="hover:underline">Login</Link>
-        <Link to="/dashboard" className="hover:underline">Dashboard</Link>
-        <Link to="/add-food" className="hover:underline">Add Food</Link>
-        <Link to="/foods" className="hover:underline">Food List</Link>
+        {isAuthenticated && (
+          <>
+            {user?.role === 'donor' && (
+              <Link to="/add-food" className="hover:underline">Add Food</Link>
+            )}
+            <Link to="/foods" className="hover:underline">Food List</Link>
+            <button 
+              onClick={handleLogout}
+              className="hover:underline bg-red-600 px-3 py-1 rounded hover:bg-red-700"
+            >
+              Logout
+            </button>
+          </>
+        )}
       </div>
     </nav>
   );

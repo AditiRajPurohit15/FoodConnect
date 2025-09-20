@@ -12,7 +12,7 @@ app.use(cookieParser());
 connectDB();
 
 const cors = require('cors');
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: 'http://localhost:5173',credentials: true }));
 // Routes
 app.use("/api/foods", foodRoutes);
 app.use("/user", userRoutes);
@@ -22,8 +22,7 @@ app.get("/", (req, res) => {
   res.send("Backend is running ✅");
 });
 
-let PORT = process.env.PORT || 4000
-
+let PORT = process.env.PORT || 3000
 
 app.listen(PORT, ()=>{
     console.log(`server is working on port ${PORT}`);

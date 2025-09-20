@@ -16,10 +16,11 @@
             location,
             contact,
             expiryTime,
-            donorId: req.user._id   // comes from JWT
+            donorId: req.user.id   // comes from JWT
         })
         res.status(201).json({ message: "Food listed successfully", food: newFood });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: "Error adding food", error });
     }
  })
@@ -80,6 +81,21 @@ router.delete("/:id", auth, roleCheck(["donor"]), async (req, res) => {
         res.json({ message: "Food listing deleted" });
     } catch (error) {
         res.status(500).json({ message: "Error deleting food", error });
+    }
+});
+
+// Delete delivered food (for auto-cleanup)
+router.delete("/delivered/:id", auth, roleCheck(["volunteer", "ngo"]), async (req, res) => {
+    try {
+        const food = await foodModel.findOneAndDelete({ 
+            _id: req.params.id, 
+            status: "delivered" 
+        });
+
+        if (!food) return res.status(404).json({ message: "Delivered food not found" });
+        res.json({ message: "Delivered food item removed" });
+    } catch (error) {
+        res.status(500).json({ message: "Error deleting delivered food", error });
     }
 });
 
